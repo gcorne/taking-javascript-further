@@ -20,9 +20,16 @@ JADE_FILES := $(wildcard client/*/*.jade) $(wildcard server/*/*.jade)
 STYL_FILES := $(wildcard client/*/*.styl) $(wildcard server/*/*.styl)
 PACKAGE_JSON_FILES := package.json $(wildcard client/*/package.json) $(wildcard server/*/package.json)
 
+# variables
+NODE_ENV ?= development
+NODE_PATH ?= server
+
+export NODE_ENV := $(NODE_ENV)
+export NODE_PATH := $(NODE_PATH)
+
 # The `run` task is the default rule in the Makefile.
 # Simply running `make` by itself will spawn the Node.js server instance.
-run: install client/config/index.js
+run: install
 	@$(NODE) index.js
 
 # alias to the `node_modules` rule
@@ -42,47 +49,19 @@ node_modules: node_modules/npm-deps $(PACKAGE_JSON_FILES)
 	@$(NPM) install
 	@touch node_modules
 
-# compile the `client/index.jade` root template file into `public/index.html`
-public/index.html: client/index.jade node_modules/jade
-	@$(JADE) --pretty < $< > $@
-	@echo >> $@ # ensure trailing \n
-
-# compile all *.jade template files into *.jadejs files usable from the
-# client-side through browserify. Note that we could also simply use the
-# `jadeify` transform, however then we lose the `mtime` benefits of make
-%.jadejs: %.jade node_modules/jade
-	@echo "var jade = require('jade/runtime');" > $@
-	@printf "module.exports = " >> $@
-	@$(JADE) --client --path "$<" < $< >> $@
-	@echo >> $@ # ensure trailing \n
-
-# compile all *.styl CSS preprocessor files into *.styl.css files, which is
-# what the `public/build.css` rule relies on to concat the final CSS bundle
-%.styl.css: %.styl node_modules/styl
-	@DEBUG= $(STYL) --whitespace < $< > $@ # note: have to reset DEBUG otherwise styl outputs some junk
-	@echo >> $@ # ensure trailing \n
-
-# concats all the built `*.styl.css` CSS files
-public/build.css: $(STYL_FILES:.styl=.styl.css)
-	@cat $(STYL_FILES:.styl=.styl.css) > $@
 
 # bundle client-side `*.js` files into the `public/build.js` file
-public/build.js: $(JADE_FILES:.jade=.jadejs) $(wildcard client/*/*.js) node_modules
+public/build.js: $(wildcard client/*/*.js) node_modules
 	@NODE_PATH=$(THIS_DIR)/client $(BROWSERIFY) \
-		--extension=.jadejs \
 		client/boot \
 		> $@
 
 # the `make build` rule is just an aggregate of some specific file rules
-build: public/index.html public/build.css public/build.js
+build: public/build.js
 
 # the `clean` rule deletes all the files created from `make build`
 clean:
-	@rm -rf public/index.html \
-		public/build.css \
-		public/build.js \
-		$(STYL_FILES:.styl=.styl.css) \
-		$(JADE_FILES:.jade=.jadejs)
+	@rm -rf public/build.js
 
 # the `distclean` rule deletes all the files created from `make install`
 distclean:

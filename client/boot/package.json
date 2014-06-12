@@ -1,19 +1,21 @@
 {
-  "name": "taking-javascript-further-bespoke",
+  "name": "boot",
   "version": "0.0.0",
   "dependencies": {
-    "bespoke": "~0.4.0",
-    "bespoke-keys": "~0.1.0",
-    "bespoke-touch": "~0.1.0",
-    "bespoke-bullets": "~0.2.0",
-    "bespoke-scale": "~0.2.0",
-    "bespoke-hash": "~0.1.0",
-    "bespoke-progress": "~0.1.0",
-    "bespoke-state": "~0.2.0",
-    "bespoke-forms": "~0.1.0",
-    "prism": "LeaVerou/prism"
-  },
-  "engines": {
-    "node": ">=0.8.0"
+    "bespoke": "0.4.0",
+    "bespoke-keys": "0.1.0",
+    "bespoke-touch": "0.1.0",
+    "bespoke-bullets": "0.2.1",
+    "bespoke-scale": "0.2.0",
+    "bespoke-hash": "0.1.2",
+    "bespoke-history": "0.1.1",
+    "bespoke-progress": "0.1.0",
+    "bespoke-state": "0.2.2",
+    "bespoke-forms": "0.1.0",
+	"bespoke-run": "0.1.1",
+	"backbone": "1.1.2",
+	"underscore": "1.6.0",
+	"jquery": "2.1.1",
+    "prismjs": "LeaVerou/prism#gh-pages"
   }
 }

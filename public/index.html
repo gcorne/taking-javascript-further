@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>Taking Your Javascript Further</title>
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=latin,latin-ext">
+		<link rel="stylesheet" type="text/css" href="/prism.css">
+		<link rel="stylesheet" type="text/css" href="/main.css">
+	</head>
+	<body>
+		<article>
+			<section class="center-vertical bold">
+				<h1 style="width: 60%">Taking Your Javascript Further</h1>
+				<h2>Gregory Cornelius &ndash; <a href="https://twitter.com/gcorne">@gcorne</a></h2>
+				<h3>Code Wrangler, Automattic</h3>
+				<h4 style="margin-top: 80px">WordCamp Chicago 2014</h4>
+			</section>
+			<section>
+				<h2>Agenda</h2>
+				<ol>
+					<li>General Strategies for Thinking and Learning</li>
+					<li>Some Advanced JavaScript Fundamentals</li>
+				</ol>
+			</section>
+			<section class="center-vertical">
+				<h2>Make Time For Learning</h2>
+				<blockquote style="margin-top: 40px">Hit pause every so often.<br />Read, think, and experiment.</blockquote>
+
+			</section>
+
+			<!--<section>
+				<h2>First Principles</h2>
+				<blockquote>Fundamental principles never go out of style. (e.g. the speed of light isn't going to change )</blockquote>
+
+				<ol>
+					<li>Algorithms &amp; Data Structures</li>
+					<li>Networking</li>
+					<li>Document Object Model</li>
+					<li>Digital Images</li>
+					<li>Browser Rendering</li>
+					<li>Text Parsing</li>
+				</ol>
+
+
+			</section>-->
+
+			<section>
+				<!--<img src="/images/pragmatic-thinking-learning.png" width="40%" />-->
+				<h2>Build Understanding Through Reading</h2>
+				<h3>Learn from the experts</h3>
+				<ol>
+					<li>Read books by authors that you respect.</li>
+					<li>Read documentation and specs. Try and take your time understand them and then go to other sources to explain them.
+						<ul class="bullets">
+							<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">Mozilla Developers Network</a></li>
+							<li><a href="http://msdn.microsoft.com/en-us/library/ie/bg125388">Microsoft Internet Explorer Dev Center</a></li>
+							<li><a href="http://www.w3.org/TR/">W3C Specifications</a></li>
+							<li><a href="https://developer.apple.com/library/safari/navigation/index.html">Apple Safari Documentation</a></li>
+							<li><a href="http://www.ietf.org/">IETF Specifications</a></li>
+						</ul>
+					</li>
+
+					<li>Read code (ultimate source of truth).</li>
+				</ol>
+
+				<blockquote>Fundamental principles never go out of style.<br>(e.g. the speed of light isn't going to change )</blockquote>
+
+			</section>
+			<section class="bold center-vertical">
+				<h1 style="width: 60%">Contribute to WordPress Core!</h1>
+			</section>
+			<section>
+				<h2>Challenge Yourself!</h2>
+				<ol>
+					<li>Do I know how the code really works?</li>
+					<li>Can the code I'm working on be simipler? Where is the complexity?</li>
+					<li>Can I make better use of the libraries I am using?</li>
+					<li>Are the multiple places in the code where the same idioms are being repeated?</li>
+					<li>Are there edge cases that I might be missing?</li>
+				</ol>
+
+			</section>
+			<section class="bold center-vertical">
+				<h1 style="width: 60%">Advanced JavaScript Fundamentals</h1>
+			</section>
+			<section>
+				<h2>Named Function Definitions</h2>
+				<pre><code class="language-javascript">
+function makeMoney( dollars ) {
+	var money = '';
+	for ( var i = 0; i &lt; dollars; i++ ) {
+		money += '$';
+	}
+	return money;
+};
+console.log( makeMoney( 5 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+
+			<section>
+				<h2>Named Functions &mdash; WordPress Core</h2>
+				<pre><code class="language-javascript">
+function getUserSetting( name, def ) {
+	var obj = getAllUserSettings();
+
+	if ( obj.hasOwnProperty(name) )
+		return obj[name];
+
+	if ( typeof def != 'undefined' )
+		return def;
+
+	return '';
+}
+				</code></pre>
+				<p>src: <cite><a target="_blank" href="https://core.trac.wordpress.org/browser/trunk/wp-includes/js/utils.js">wp-includes/js/utils.js</cite></a>
+			</section>
+			<section>
+				<h2>Function Expressions</h2>
+				<pre><code class="language-javascript">
+var makeMoney = function( dollars ) {
+	var money = '';
+	for ( var i = 0; i &lt; dollars; i++ ) {
+		money += '$';
+	}
+	return money;
+};
+console.log( makeMoney( 10 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>Closures</h2>
+				<pre><code class="language-javascript">
+var magicMoneyMachine = function() {
+	var money = '';
+
+	function makeSome( dollars ) {
+		if ( dollars &gt; 40 ) {
+			throw new Error( "Don't be greedy!" );
+		}
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+		return money;
+	}
+
+	return makeSome;
+};
+
+var makeMoney = magicMoneyMachine();
+
+console.log( makeMoney( 5 ).length );
+console.log( makeMoney( 15 ).length );
+console.log( makeMoney( 50 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>Immediately Invoked Functions (IIFE)</h2>
+				<pre><code class="language-javascript">
+(function() {
+	var money = '';
+
+	function makeMoney( dollars ) {
+		if ( dollars &gt; 40 ) {
+			throw new Error( "Don't be greedy!" );
+		}
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+		return money;
+	}
+
+	console.log( makeMoney( 10 ) );
+	console.log( makeMoney( 20 ) );
+
+})();
+
+console.log( makeMoney( 25 ) );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>IIFE &mdash; WordPress Core</h2>
+				<pre><code class="language-javascript">
+(function($){
+	var identifier = 0,
+		zindex = 9999;
+
+
+		$.widget('wp.pointer', {
+			options: {
+				pointerClass: 'wp-pointer',
+				pointerWidth: 320,
+
+			// a bunch of code
+
+		});
+
+})(jQuery);
+
+				</code></pre>
+				<p>src: <a target="_blank" href="https://core.trac.wordpress.org/browser/trunk/wp-includes/js/wp-pointer.js"><cite>wp-includes/js/wp-pointer.js</cite></a>
+			</section>
+			<section>
+				<h2>Object Literal</h2>
+				<pre><code class="language-javascript">
+var magicBank = {
+	money: '',
+	moreMoney: function( dollars ) {
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			this.money += '$';
+		}
+		return this.money;
+	}
+};
+
+console.log( magicBank.moreMoney( 20 ).length );
+console.log( magicBank.moreMoney( 100 ).length );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+
+
+			</section>
+			<section>
+				<h2>Object as Namespaces</h2>
+				<pre><code class="language-javascript">
+window.wp = window.wp || {};
+(function ($) {
+wp.template = _.memoize(function ( id ) {
+	var compiled,
+		options = {
+			evaluate:    /&lt;#([\s\S]+?)#&gt;/g,
+			interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+			escape:      /\{\{([^\}]+?)\}\}(?!\})/g,
+			variable:    'data'
+		};
+
+	return function ( data ) {
+		compiled = compiled ||
+			_.template(
+				$( '#tmpl-' + id ).html(),
+				null,
+				options
+			);
+		return compiled( data );
+	};
+});
+
+// ...
+
+})( jQuery );
+			</code></pre>
+			<p>src: <a target="_blank" href="https://core.trac.wordpress.org/browser/trunk/wp-includes/js/wp-util.js"><cite>wp-includes/js/wp-util.js</cite></a>
+
+			</section>
+			<section>
+				<h2>Module Pattern</h2>
+				<pre><code class="language-javascript">
+function makeMagicBank() {
+	var money = '';
+	function moreMoney( dollars ) {
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+		return money;
+	}
+
+	function donate( dollars ) {
+		moreMoney( dollars );
+		return 'thanks!';
+	}
+
+	return {
+		moreMoney: moreMoney,
+		donate: donate
+	};
+};
+
+var magicBank = makeMagicBank();
+
+console.log( magicBank.donate( 5 ) );
+console.log( magicBank.moreMoney( 10 ) );
+console.log( magicBank.moreMoney( 20 ) );
+
+			</code></pre>
+			<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>Module Pattern &mdash; WordPress Core</h2>
+				<pre><code class="language-javascript">
+
+(function( $, window, undefined ) {
+	var Heartbeat = function() {
+		var $document = $(document),
+			settings = {};
+
+		function initialize() {}
+		function enqueue() {}
+		function isQueued() {}
+		function dequeue() {}
+		// etc...
+
+		return {
+			enqueue: enqueue,
+			dequeue: dequeue,
+			isQueued: isQueued
+			// etc...
+		};
+	}
+
+	// Ensure the global `wp` object exists.
+	window.wp = window.wp || {};
+	window.wp.heartbeat = new Heartbeat();
+}( jQuery, window ));
+				</code></pre>
+				<p>src: <a target="_blank" href="https://core.trac.wordpress.org/browser/trunk/wp-includes/js/heartbeat.js"><cite>wp-includes/js/heartbeat.js</cite></a></p>
+			</section>
+			<section>
+				<h2>Object Constructor Function</h2>
+				<pre><code class="language-javascript">
+var MagicBank = function() {
+
+	this.money = '';
+	this.moreMoney = function( dollars ) {
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			this.money += '$';
+		}
+		return this.money;
+	}
+};
+
+var magicBank = new MagicBank();
+console.log( magicBank.moreMoney( 25 ) );
+console.log( magicBank.moreMoney( 25 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>Prototypal Inheritance</h2>
+				<pre><code class="language-javascript">
+var MagicBank = function() {
+	this.money = '';
+};
+
+MagicBank.prototype.moreMoney = function( dollars ) {
+	for ( var i = 0; i &lt; dollars; i++ ) {
+		this.money += '$';
+	}
+	return this.money;
+};
+
+var magicBank = new MagicBank();
+console.log( magicBank.moreMoney( 25 ) );
+
+var AutoBank = function() {
+	// call parent constructor
+	MagicBank.call( this );
+	// override property initialization
+	this.money = '$$$$$';
+}
+AutoBank.prototype = Object.create( MagicBank.prototype );
+AutoBank.prototype.constructor = AutoBank;
+
+bank = new AutoBank();
+console.log( bank.moreMoney( 25 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+
+			<section>
+				<h2>Relationship Between Object and Prototype</h2>
+				<img src="/images/prototype.png" />
+			</section>
+
+			<section>
+				<h2>Dual-Use Function Body</h2>
+				<pre><code class="language-javascript">
+var MagicBank = function() {
+	// return new object instance
+	if ( ! ( this instanceof MagicBank ) ) {
+		return new MagicBank();
+	}
+
+	// set up defaults
+	this.money = '';
+};
+
+MagicBank.prototype.moreMoney = function( dollars ) {
+	for ( var i = 0; i &lt; dollars; i++ ) {
+		this.money += '$';
+	}
+	return this.money;
+};
+
+bank = MagicBank();
+console.log( bank.moreMoney( 25 ) );
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+
+			<section>
+				<h2>Composing Objects</h2>
+
+				<pre><code class="language-javascript">
+function List( node, itemTemplate, items ) {
+	this.items = items;
+	this.el = node;
+	this.template = itemTemplate
+};
+
+List.prototype.render = function() {
+	var html = '&lt;ol&gt;';
+	this.items.forEach( function( item ) {
+		html += this.template( item );
+	}, this );
+	html += '&lt;/ol&gt;';
+	this.el.innerHTML = html;
+};
+
+function Sort( prototype, prop ) {
+
+	prototype.sort = function() {
+		this[ prop ].sort()
+	}
+}
+
+Sort( List.prototype, 'items' );
+
+			</code></pre>
+		</section>
+
+
+		<section>
+			<h2>Composing Objects (usage )</h2>
+				<pre><code class="language-javascript">
+function template ( item ) {
+	return '&lt;li&gt;' + item + '&lt;/li&gt;';
+}
+var list = new List(
+	document.getElementById('list'),
+	template,
+	[ 'pear', 'orange', 'apple', 'banana' ]
+);
+
+list.sort();
+list.render();
+			</code></pre>
+		<a id="compose-run" href="#">run</a>
+
+		<h4 style="margin-top: 40px;">results:</h4>
+		<div id="list"></div>
+		<script type="text/javascript">
+
+(function() {
+	function List( node, itemTemplate, items ) {
+		this.items = items;
+		this.el = node;
+		this.template = itemTemplate
+	};
+
+	List.prototype.render = function() {
+		var html = '<ol>';
+		this.items.forEach( function( item ) {
+			html += this.template( item );
+		}, this );
+		html += '</ol>';
+		this.el.innerHTML = html;
+	};
+
+	function Sort( prototype, prop ) {
+
+		prototype.sort = function() {
+			this[ prop ].sort()
+		}
+	}
+
+	Sort( List.prototype, 'items' );
+
+	document.getElementById('compose-run').addEventListener( 'click', function( event ) {
+		event.preventDefault();
+		function template ( item ) {
+			return '<li>' + item + '</li>';
+		}
+		var list = new List( document.getElementById('list'),
+			template,
+			[ 'pear', 'orange', 'apple', 'banana' ]
+		);
+
+		list.sort();
+		list.render();
+	} );
+})();
+		</script>
+	</section>
+
+			<section>
+				<h2>Inheritance in Backbone</h2>
+				<pre><code class="language-javascript">
+var Bank = Backbone.Model.extend({
+	defaults: {
+		money: ''
+	},
+	makeMoney: function( dollars ) {
+		var money = this.get( 'money' );
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+		this.set( 'money', money );
+		return money;
+	}
+});
+
+var magicBank = new Bank();
+console.log( magicBank.makeMoney( 20 ) );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+			</section>
+			<section>
+				<h2>Composition in Backbone</h2>
+				<pre>
+<code class="language-javascript">var Bank = Backbone.Model.extend({
+	defaults: {
+		money: ''
+	},
+	makeMoney: function( dollars ) {
+		var money = this.get( 'money' );
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+		this.set( 'money', money );
+		return money;
+	}
+});
+
+var BankView = Backbone.View.extend({
+	render: function() {
+		this.$el.text( this.model.get( 'money' ) );
+	}
+});
+
+var magicBank = new Bank();
+var view = new BankView({
+	el: document.getElementById( 'bank-view' ),
+	model: magicBank
+});
+
+magicBank.makeMoney( 20 );
+view.render();</code></pre>
+				<a data-bespoke-run>run</a>
+				<div id="bank-view" style="margin-top: 20px;"></div>
+			</section>
+
+			<section>
+				<h2>An Aside on &quot;this&quot;</h2>
+				<pre>
+<code class="language-javascript">var Bank = Backbone.Model.extend({
+	defaults: {
+		money: ''
+	},
+	makeMoney: function( dollars ) {
+		var money = this.get( 'money' );
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+
+		this.set( 'money', money );
+
+		function log() {
+			console.log( this.get( 'money' ) );
+		}
+
+		log();
+		return money;
+	}
+});
+
+magicBank = new Bank();
+
+magicBank.makeMoney( 20 );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+
+			</section>
+			<section>
+				<h2>An Aside on &quot;this&quot; (part 2)</h2>
+				<pre>
+<code class="language-javascript">var Bank = Backbone.Model.extend({
+	defaults: {
+		money: ''
+	},
+	makeMoney: function( dollars ) {
+		var money = this.get( 'money' );
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+
+		this.set( 'money', money );
+
+		function log() {
+			console.log( this.get( 'money' ) );
+		}
+
+		log = log.bind( this );
+		log();
+		return money;
+	}
+});
+
+magicBank = new Bank();
+
+magicBank.makeMoney( 20 );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+
+			</section>
+
+
+			<section>
+				<h2>Messaging Between Components</h2>
+				<pre><code class="language-javascript">
+var MagicBank = function() {
+	this.money = '';
+	this.makeMoney = function( dollars ) {
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			this.money += '$';
+		}
+		var event = new CustomEvent( 'moneyAdded', { detail: 
+			{ money: this.money }
+		} );
+		document.dispatchEvent( event );
+
+		return this.money;
+	}
+};
+
+
+// Listen for the event.
+document.addEventListener('moneyAdded', function ( event ) {
+	console.log( 'added', event.detail.money );
+});
+
+var bank = new MagicBank();
+bank.makeMoney( 20 );
+bank.makeMoney( 40 );
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+
+			</section>
+			<section>
+				<h2>Messaging in Backbone</h2>
+				<pre><code class="language-javascript">
+var MagicBank = Backbone.Model.extend({
+	defaults: {
+		money: ''
+	},
+	makeMoney: function( dollars ) {
+		var money = this.get( 'money' );
+		for ( var i = 0; i &lt; dollars; i++ ) {
+			money += '$';
+		}
+
+		this.set( 'money', money );
+		return money;
+	}
+});
+
+var bank = new MagicBank();
+bank.on( 'change:money', function( model, money ) {
+	console.log( 'updated:', money );
+} );
+bank.makeMoney( 20 );
+bank.makeMoney( 40 );
+
+
+				</code></pre>
+				<a data-bespoke-run>run</a>
+
+			</section>
+
+			<section>
+				<h2>Further Areas for Exploration</h2>
+				<ol>
+					<li><a href="http://npmjs.org/">node</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame">requestAnimationFrame</a></li>
+					<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts">ECMAScript 6 (harmony)</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/WebGL">WebGL</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement">Canvas</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers">Web Workers</a></li>
+					<li><a href="https://github.com/kripken/emscripten">Emscripten</a> &amp; <a href="http://asmjs.org/">asm.js</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/WebSockets">Web Sockets</a></li>
+				</ol>
+			</section>
+			<section class="center-vertical bold">
+				<h2 style="margin-bottom: 80px; color: white;">Explore. Learn. Have Fun. Go Further.</h2>
+				<iframe width="640" height="390" src="//www.youtube.com/embed/eGimzB5QM1M" frameborder="0" allowfullscreen></iframe>
+			</section>
+		</article>
+		<script src="/build.js"></script>
+	</body>
+</html>
