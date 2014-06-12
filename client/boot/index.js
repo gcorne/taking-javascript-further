@@ -1,0 +1,1 @@
+var deck = require(deck)();

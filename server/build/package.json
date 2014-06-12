@@ -1,0 +1,7 @@
+{
+  "name": "build",
+  "private": true,
+  "dependencies": {
+    "debug": "1.0.1"
+  }
+}
