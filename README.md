@@ -1,6 +1,7 @@
 # Taking Your Javascript Further
 
-## View slides locally
+
+## To install, run, and build
 
 First, ensure you have [Node.js](http://nodejs.org) installed.
 
