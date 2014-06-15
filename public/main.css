@@ -356,3 +356,51 @@ blockquote {
 	font-size: 14px;
 	margin: 0.25em;
 }
+
+@media (max-width: 600px ) {
+	.bespoke-slide {
+		padding: 10px;
+	}
+
+	body {
+
+		font-size: 14px;
+	}
+
+	h1, h2, pre {
+		width: 100%;
+	}
+
+	h1 {
+		font-size: 36px;
+		line-height: 1.5em;
+	}
+
+	h2 {
+		font-size: 24px;
+		text-align: center;
+		line-height: 1.3em;
+	}
+
+	h3 {
+		font-size: 18px;
+
+	}
+
+	code {
+		font-size: 11px;
+
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	iframe {
+		max-width: 100%;
+	}
+
+
+
+}
