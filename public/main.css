@@ -357,6 +357,12 @@ blockquote {
 	margin: 0.25em;
 }
 
+@media (max-width: 1024px ) {
+	pre {
+		width: 90%;
+	}
+}
+
 @media (max-width: 600px ) {
 	.bespoke-slide {
 		padding: 10px;
@@ -389,7 +395,6 @@ blockquote {
 
 	code {
 		font-size: 11px;
-
 	}
 
 	img {

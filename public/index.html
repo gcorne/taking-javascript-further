@@ -13,7 +13,7 @@
 				<h1 style="width: 60%">Taking Your Javascript Further</h1>
 				<h2>Gregory Cornelius &ndash; <a href="https://twitter.com/gcorne">@gcorne</a></h2>
 				<h3>Code Wrangler, Automattic</h3>
-				<h4 style="margin-top: 80px">WordCamp Chicago 2014</h4>
+				<h4 style="margin-top: 80px">Boston WordPress Meetup July 28, 2014</h4>
 			</section>
 			<section>
 				<h2>Agenda</h2>
@@ -45,10 +45,9 @@
 			</section>-->
 
 			<section>
-				<h2>Build Understanding Through Reading</h2>
-				<h3>Learn from the experts</h3>
+				<h2>Learning Strategies</h2>
 				<ol>
-					<li>Read books by authors that you respect.</li>
+					<li>Read books written by experts.</li>
 					<li>Read documentation and specs. Try and take your time understand them and then go to other sources to explain them.
 						<ul class="bullets">
 							<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">Mozilla Developers Network</a></li>
@@ -60,16 +59,14 @@
 					</li>
 
 					<li>Read code (ultimate source of truth).</li>
+					<li>Experiment, play, have fun.</li>
 				</ol>
 
 				<blockquote>Fundamental principles never go out of style.<br>(e.g. the speed of light isn't going to change )</blockquote>
 
 			</section>
-			<section class="bold center-vertical">
-				<h1 style="width: 60%">Contribute to WordPress Core!</h1>
-			</section>
 			<section>
-				<h2>Challenge Yourself!</h2>
+				<h2>Challenge Yourself to Go Deeper!</h2>
 				<ol>
 					<li>Do I know how the code really works?</li>
 					<li>Can the code I'm working on be simipler? Where is the complexity?</li>
@@ -79,11 +76,14 @@
 				</ol>
 
 			</section>
+			<section class="center-vertical">
+				<h1 style="width: 60%">Contribute to WordPress Core!</h1>
+			</section>
 			<section class="bold center-vertical">
 				<h1 style="width: 60%">Advanced JavaScript Fundamentals</h1>
 			</section>
 			<section>
-				<h2>Named Function Definitions</h2>
+				<h2>Function Definitions</h2>
 				<pre><code class="language-javascript">
 function makeMoney( dollars ) {
 	var money = '';
@@ -92,12 +92,24 @@ function makeMoney( dollars ) {
 	}
 	return money;
 };
+
+var makeMoneyTwo = function( dollars ) {
+	var money = '';
+	for ( var i = 0; i &lt; dollars; i++ ) {
+		money += '$';
+	}
+	return money;
+};
+
+var MakeMoneyThree = makeMoney;
 console.log( makeMoney( 5 ) );
+console.log( makeMoneyTwo( 5 ) );
+console.log( makeMoneyThree( 5 ) );
 				</code></pre>
 				<a data-bespoke-run>run</a>
 			</section>
 
-			<section>
+			<!--<section>
 				<h2>Named Functions &mdash; WordPress Core</h2>
 				<pre><code class="language-javascript">
 function getUserSetting( name, def ) {
@@ -127,7 +139,7 @@ var makeMoney = function( dollars ) {
 console.log( makeMoney( 10 ) );
 				</code></pre>
 				<a data-bespoke-run>run</a>
-			</section>
+			</section>-->
 			<section>
 				<h2>Closures</h2>
 				<pre><code class="language-javascript">
@@ -151,7 +163,7 @@ var makeMoney = magicMoneyMachine();
 
 console.log( makeMoney( 5 ).length );
 console.log( makeMoney( 15 ).length );
-console.log( makeMoney( 50 ) );
+console.log( makeMoney( 50 ).length );
 				</code></pre>
 				<a data-bespoke-run>run</a>
 			</section>
@@ -181,7 +193,7 @@ console.log( makeMoney( 25 ) );
 				</code></pre>
 				<a data-bespoke-run>run</a>
 			</section>
-			<section>
+			<!--<section>
 				<h2>IIFE &mdash; WordPress Core</h2>
 				<pre><code class="language-javascript">
 (function($){
@@ -202,7 +214,7 @@ console.log( makeMoney( 25 ) );
 
 				</code></pre>
 				<p>src: <a target="_blank" href="https://core.trac.wordpress.org/browser/trunk/wp-includes/js/wp-pointer.js"><cite>wp-includes/js/wp-pointer.js</cite></a>
-			</section>
+			</section>-->
 			<section>
 				<h2>Object Literal</h2>
 				<pre><code class="language-javascript">
@@ -371,7 +383,7 @@ console.log( bank.moreMoney( 25 ) );
 			</section>
 
 			<section>
-				<h2>Relationship Between Object and Prototype</h2>
+				<h2>Prototype Chain</h2>
 				<img src="images/prototype.png" />
 			</section>
 
@@ -620,7 +632,6 @@ magicBank.makeMoney( 20 );
 
 			</section>
 
-
 			<section>
 				<h2>Messaging Between Components</h2>
 				<pre><code class="language-javascript">
@@ -639,16 +650,18 @@ var MagicBank = function() {
 	}
 };
 
+var listener = function( event ) {
+	console.log( 'added', event.detail.money );
+};
 
 // Listen for the event.
-document.addEventListener('moneyAdded', function ( event ) {
-	console.log( 'added', event.detail.money );
-});
-
+document.addEventListener( 'moneyAdded', listener );
 var bank = new MagicBank();
 bank.makeMoney( 20 );
 bank.makeMoney( 40 );
 
+// Listen for the event.
+document.removeEventListener( 'moneyAdded', listener );
 				</code></pre>
 				<a data-bespoke-run>run</a>
 
@@ -678,10 +691,23 @@ bank.on( 'change:money', function( model, money ) {
 bank.makeMoney( 20 );
 bank.makeMoney( 40 );
 
-
+bank.off( 'change:money' );
 				</code></pre>
 				<a data-bespoke-run>run</a>
 
+			</section>
+			<section>
+				<h2>Web Timing APIs</h2>
+				<pre><code class="language-javascript">
+var timing = window.performance.timing;
+
+console.log( timing );
+
+console.log( timing.responseEnd - timing.navigationStart + "ms response time" );
+console.log( timing.domContentLoadedEventStart - timing.navigationStart + "ms jQuery dom ready" );
+console.log( new Date().getTime() - timing.navigationStart + "ms since document loaded" );
+				</code></pre>
+				<a data-bespoke-run>run</a>
 			</section>
 
 			<section>
@@ -697,8 +723,8 @@ bank.makeMoney( 40 );
 					<li><a href="https://developer.mozilla.org/en-US/docs/WebSockets">Web Sockets</a></li>
 				</ol>
 			</section>
-			<section class="center-vertical bold">
-				<h2 style="margin-bottom: 80px; color: white;">Explore. Learn. Have Fun. Go Further.</h2>
+			<section class="center-vertical">
+				<h2 style="margin-bottom: 80px;">Go Further!</h2>
 				<iframe width="640" height="390" src="https://www.youtube.com/embed/eGimzB5QM1M" frameborder="0" allowfullscreen></iframe>
 			</section>
 		</article>
